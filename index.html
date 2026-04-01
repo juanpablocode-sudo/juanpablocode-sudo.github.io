@@ -45,6 +45,8 @@
     .cards {
       display: flex;
       gap: 20px;
+      flex-wrap: wrap; /* 🔥 para que no se rompa en pantalla chica */
+      justify-content: center;
     }
 
     .card {
@@ -53,6 +55,7 @@
       border-radius: 10px;
       width: 200px;
       transition: 0.3s;
+      text-align: center;
     }
 
     .card:hover {
@@ -87,35 +90,37 @@
 
   <div class="cards">
 
-  <div class="card">
-    <h3>🎯 Adivina el número</h3>
-    <button onclick="jugar()">Jugar</button>
+    <div class="card">
+      <h3>🎯 Adivina el número</h3>
+      <button onclick="jugar()">Jugar</button>
+    </div>
+
+    <div class="card">
+      <h3>🎲 Dados</h3>
+      <button onclick="dados()">Jugar</button>
+    </div>
+
+    <div class="card">
+      <h3>✊ Piedra Papel Tijera</h3>
+      <button onclick="ppt()">Jugar</button>
+    </div>
+
+    <div class="card">
+      <h3>🔐 Generador de contraseña</h3>
+      <button onclick="password()">Generar</button>
+    </div>
+
+    <div class="card">
+      <h3>❓ Quiz Python</h3>
+      <button onclick="quiz()">Jugar</button>
+    </div>
+
   </div>
-
-  <div class="card">
-    <h3>🎲 Dados</h3>
-    <button onclick="dados()">Jugar</button>
-  </div>
-
-  <div class="card">
-    <h3>✊ Piedra Papel Tijera</h3>
-    <button onclick="ppt()">Jugar</button>
-  </div>
-
-  <div class="card">
-    <h3>🔐 Generador de contraseña</h3>
-    <button onclick="password()">Generar</button>
-  </div>
-
-  <div class="card">
-    <h3>❓ Quiz Python</h3>
-    <button onclick="quiz()">Jugar</button>
-  </div>
-
-</div>
-
-
 </section>
+
+<footer style="text-align:center; padding:20px; color:#6b7280;">
+  © 2026 Juan Pablo Code
+</footer>
 
 <script>
 function jugar() {
@@ -135,7 +140,8 @@ function dados() {
 
   alert("🎲 Sacaste: " + d1 + " y " + d2);
 }
-  function ppt() {
+
+function ppt() {
   let opciones = ["piedra", "papel", "tijera"];
   let cpu = opciones[Math.floor(Math.random() * 3)];
   let user = prompt("Elegí: piedra, papel o tijera");
@@ -152,7 +158,8 @@ function dados() {
     alert("❌ Perdiste. CPU eligió " + cpu);
   }
 }
-  function password() {
+
+function password() {
   let chars = "abcdefghijklmnopqrstuvwxyz1234567890!@#";
   let pass = "";
 
@@ -162,7 +169,8 @@ function dados() {
 
   alert("🔐 Tu contraseña: " + pass);
 }
-  function quiz() {
+
+function quiz() {
   let respuesta = prompt("¿Python es tipado dinámicamente? (si/no)");
 
   if (respuesta.toLowerCase() === "si") {
