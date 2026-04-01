@@ -95,6 +95,21 @@
     <div class="card">
       <h3>🎲 Dados</h3>
       <button onclick="dados()">Jugar</button>
+
+      <div class="card">
+  <h3>✊ Piedra Papel Tijera</h3>
+  <button onclick="ppt()">Jugar</button>
+</div>
+
+<div class="card">
+  <h3>🔐 Generador de contraseña</h3>
+  <button onclick="password()">Generar</button>
+</div>
+
+<div class="card">
+  <h3>❓ Quiz Python</h3>
+  <button onclick="quiz()">Jugar</button>
+</div>
     </div>
 
   </div>
@@ -117,6 +132,42 @@ function dados() {
   let d2 = Math.floor(Math.random() * 6) + 1;
 
   alert("🎲 Sacaste: " + d1 + " y " + d2);
+}
+  function ppt() {
+  let opciones = ["piedra", "papel", "tijera"];
+  let cpu = opciones[Math.floor(Math.random() * 3)];
+  let user = prompt("Elegí: piedra, papel o tijera");
+
+  if (user === cpu) {
+    alert("Empate 🤝");
+  } else if (
+    (user === "piedra" && cpu === "tijera") ||
+    (user === "papel" && cpu === "piedra") ||
+    (user === "tijera" && cpu === "papel")
+  ) {
+    alert("🔥 Ganaste! CPU eligió " + cpu);
+  } else {
+    alert("❌ Perdiste. CPU eligió " + cpu);
+  }
+}
+  function password() {
+  let chars = "abcdefghijklmnopqrstuvwxyz1234567890!@#";
+  let pass = "";
+
+  for (let i = 0; i < 8; i++) {
+    pass += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  alert("🔐 Tu contraseña: " + pass);
+}
+  function quiz() {
+  let respuesta = prompt("¿Python es tipado dinámicamente? (si/no)");
+
+  if (respuesta.toLowerCase() === "si") {
+    alert("✅ Correcto!");
+  } else {
+    alert("❌ Incorrecto");
+  }
 }
 </script>
 
