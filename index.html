@@ -20,10 +20,12 @@
       background: #111827;
       text-align: center;
     }
-    <div id="user-panel" style="text-align:center; padding:10px;">
-  ⭐ Puntos: <span id="points">0</span> | 
-  🧱 Nivel: <span id="level">1</span>
-</div>
+
+    #user-panel {
+      text-align: center;
+      padding: 10px;
+      background: #020617;
+    }
 
     .hero {
       padding: 60px 20px;
@@ -57,11 +59,6 @@
       margin: auto;
     }
 
-    .section h2 {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -72,17 +69,13 @@
       background: #1e293b;
       padding: 20px;
       border-radius: 12px;
-      transition: 0.3s;
       text-align: center;
+      transition: 0.3s;
     }
 
     .card:hover {
       transform: translateY(-5px) scale(1.03);
       box-shadow: 0 0 20px #22c55e;
-    }
-
-    .card h3 {
-      margin-bottom: 10px;
     }
 
     button {
@@ -101,14 +94,9 @@
       color: #6b7280;
     }
 
-    /* 📱 Responsive ajustes */
     @media (max-width: 600px) {
       .hero h1 {
         font-size: 28px;
-      }
-
-      .hero p {
-        font-size: 16px;
       }
     }
   </style>
@@ -120,10 +108,14 @@
   🚀 Juan Pablo Code
 </header>
 
+<div id="user-panel">
+  ⭐ Puntos: <span id="points">0</span> | 
+  🧱 Nivel: <span id="level">1</span>
+</div>
+
 <section class="hero">
   <h1>Aprendé Python jugando</h1>
   <p>Mini juegos y proyectos interactivos</p>
-  <button class="btn">Explorar</button>
 </section>
 
 <section class="section">
@@ -162,10 +154,10 @@
 <footer>
   © 2026 Juan Pablo Code
 </footer>
-  
 
 <script>
-  let puntos = localStorage.getItem("puntos") || 0;
+// SISTEMA DE PUNTOS
+let puntos = localStorage.getItem("puntos") || 0;
 
 function actualizarUI() {
   document.getElementById("points").innerText = puntos;
@@ -179,6 +171,10 @@ function sumarPuntos(valor) {
 }
 
 window.onload = actualizarUI;
+
+
+// JUEGOS
+
 function jugar() {
   let numero = Math.floor(Math.random() * 10) + 1;
   let intento = prompt("Adivina un número del 1 al 10");
@@ -194,11 +190,12 @@ function jugar() {
 function dados() {
   let d1 = Math.floor(Math.random() * 6) + 1;
   let d2 = Math.floor(Math.random() * 6) + 1;
-  if (d1 + d2 > 7) {
-  sumarPuntos(5);
-}
 
   alert("🎲 Sacaste: " + d1 + " y " + d2);
+
+  if (d1 + d2 > 7) {
+    sumarPuntos(5);
+  }
 }
 
 function ppt() {
@@ -229,6 +226,7 @@ function password() {
   }
 
   alert("🔐 Tu contraseña: " + pass);
+  sumarPuntos(3);
 }
 
 function quiz() {
@@ -236,7 +234,7 @@ function quiz() {
 
   if (respuesta.toLowerCase() === "si") {
     alert("✅ Correcto!");
-    sumarPuntos(10);
+    sumarPuntos(15);
   } else {
     alert("❌ Incorrecto");
   }
