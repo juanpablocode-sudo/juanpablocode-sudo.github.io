@@ -20,6 +20,10 @@
       background: #111827;
       text-align: center;
     }
+    <div id="user-panel" style="text-align:center; padding:10px;">
+  ⭐ Puntos: <span id="points">0</span> | 
+  🧱 Nivel: <span id="level">1</span>
+</div>
 
     .hero {
       padding: 60px 20px;
@@ -158,14 +162,30 @@
 <footer>
   © 2026 Juan Pablo Code
 </footer>
+  
 
 <script>
+  let puntos = localStorage.getItem("puntos") || 0;
+
+function actualizarUI() {
+  document.getElementById("points").innerText = puntos;
+  document.getElementById("level").innerText = Math.floor(puntos / 50) + 1;
+}
+
+function sumarPuntos(valor) {
+  puntos = parseInt(puntos) + valor;
+  localStorage.setItem("puntos", puntos);
+  actualizarUI();
+}
+
+window.onload = actualizarUI;
 function jugar() {
   let numero = Math.floor(Math.random() * 10) + 1;
   let intento = prompt("Adivina un número del 1 al 10");
 
   if (parseInt(intento) === numero) {
     alert("🔥 ¡Ganaste!");
+    sumarPuntos(10);
   } else {
     alert("❌ Era " + numero);
   }
@@ -174,6 +194,9 @@ function jugar() {
 function dados() {
   let d1 = Math.floor(Math.random() * 6) + 1;
   let d2 = Math.floor(Math.random() * 6) + 1;
+  if (d1 + d2 > 7) {
+  sumarPuntos(5);
+}
 
   alert("🎲 Sacaste: " + d1 + " y " + d2);
 }
@@ -191,6 +214,7 @@ function ppt() {
     (user === "tijera" && cpu === "papel")
   ) {
     alert("🔥 Ganaste! CPU eligió " + cpu);
+    sumarPuntos(10);
   } else {
     alert("❌ Perdiste. CPU eligió " + cpu);
   }
@@ -212,6 +236,7 @@ function quiz() {
 
   if (respuesta.toLowerCase() === "si") {
     alert("✅ Correcto!");
+    sumarPuntos(10);
   } else {
     alert("❌ Incorrecto");
   }
