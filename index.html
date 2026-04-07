@@ -1,244 +1,283 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juan Pablo Code | Aprende Python Jugando</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juan Pablo Code | Aprende Python Jugando</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b0f1a;
-      color: white;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0b0f1a;
+  color: white;
+}
 
-    header {
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      background: #111827;
-      text-align: center;
-    }
+header {
+  text-align: center;
+  padding: 20px;
+  background: #111827;
+  font-size: 24px;
+}
 
-    #user-panel {
-      text-align: center;
-      padding: 10px;
-      background: #020617;
-    }
+#user-panel {
+  text-align: center;
+  padding: 10px;
+  background: #020617;
+}
 
-    .hero {
-      padding: 60px 20px;
-      text-align: center;
-      background: linear-gradient(to right, #0b0f1a, #1e293b);
-    }
+.section {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
 
-    .hero h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-    }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
 
-    .hero p {
-      color: #9ca3af;
-      font-size: 18px;
-    }
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
 
-    .btn {
-      margin-top: 20px;
-      padding: 12px 20px;
-      background: #22c55e;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+button {
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  background: #22c55e;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    .section {
-      padding: 30px 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
+.hidden {
+  display: none;
+}
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
+/* QUIZ UI */
+#quizBox {
+  background: #020617;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
 
-    .card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      transition: 0.3s;
-    }
+.option {
+  background: #1e293b;
+  margin: 10px 0;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
-    .card:hover {
-      transform: translateY(-5px) scale(1.03);
-      box-shadow: 0 0 20px #22c55e;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      background: #22c55e;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #6b7280;
-    }
-
-    @media (max-width: 600px) {
-      .hero h1 {
-        font-size: 28px;
-      }
-    }
-  </style>
+.option:hover {
+  background: #22c55e;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  🚀 Juan Pablo Code
-</header>
+<header>🚀 Juan Pablo Code</header>
 
 <div id="user-panel">
-  ⭐ Puntos: <span id="points">0</span> | 
-  🧱 Nivel: <span id="level">1</span>
+⭐ Puntos: <span id="points">0</span> |
+🧱 Nivel: <span id="level">1</span>
 </div>
 
-<section class="hero">
-  <h1>Aprendé Python jugando</h1>
-  <p>Mini juegos y proyectos interactivos</p>
-</section>
-
 <section class="section">
-  <h2>🎮 Juegos</h2>
+<h2>🎮 Juegos</h2>
 
-  <div class="cards">
+<div class="cards">
 
-    <div class="card">
-      <h3>🎯 Adivina el número</h3>
-      <button onclick="jugar()">Jugar</button>
-    </div>
+<div class="card">
+<h3>🎯 Adivina el número</h3>
+<button onclick="jugar()">Jugar</button>
+</div>
 
-    <div class="card">
-      <h3>🎲 Dados</h3>
-      <button onclick="dados()">Jugar</button>
-    </div>
+<div class="card">
+<h3>🎲 Dados</h3>
+<button onclick="dados()">Jugar</button>
+</div>
 
-    <div class="card">
-      <h3>✊ Piedra Papel Tijera</h3>
-      <button onclick="ppt()">Jugar</button>
-    </div>
+<div class="card">
+<h3>✊ Piedra Papel Tijera</h3>
+<button onclick="ppt()">Jugar</button>
+</div>
 
-    <div class="card">
-      <h3>🔐 Generador de contraseña</h3>
-      <button onclick="password()">Generar</button>
-    </div>
+<div class="card" id="quizCard">
+<h3>🧠 Quiz Python</h3>
+<button onclick="iniciarQuiz()">Jugar</button>
+</div>
 
-    <div class="card">
-      <h3>❓ Quiz Python</h3>
-      <button onclick="quiz()">Jugar</button>
-    </div>
+<div class="card" id="rankingCard">
+<h3>🏆 Ranking</h3>
+<button onclick="mostrarRanking()">Ver</button>
+</div>
 
-  </div>
+</div>
+
+<div id="quizBox" class="hidden"></div>
+
 </section>
-
-<footer>
-  © 2026 Juan Pablo Code
-</footer>
 
 <script>
-// SISTEMA DE PUNTOS
+
+// ===== SISTEMA =====
 let puntos = localStorage.getItem("puntos") || 0;
+
+function nivel() {
+  return Math.floor(puntos / 50) + 1;
+}
 
 function actualizarUI() {
   document.getElementById("points").innerText = puntos;
-  document.getElementById("level").innerText = Math.floor(puntos / 50) + 1;
+  document.getElementById("level").innerText = nivel();
 }
 
-function sumarPuntos(valor) {
-  puntos = parseInt(puntos) + valor;
+function sumarPuntos(v) {
+  puntos = parseInt(puntos) + v;
   localStorage.setItem("puntos", puntos);
   actualizarUI();
+  desbloquear();
 }
 
-window.onload = actualizarUI;
+// ===== DESBLOQUEO =====
+function desbloquear() {
+  if (nivel() < 2) {
+    document.getElementById("quizCard").style.opacity = "0.3";
+  }
+}
 
-
-// JUEGOS
-
+// ===== JUEGOS =====
 function jugar() {
-  let numero = Math.floor(Math.random() * 10) + 1;
-  let intento = prompt("Adivina un número del 1 al 10");
+  let n = Math.floor(Math.random()*10)+1;
+  let i = prompt("Número 1-10");
 
-  if (parseInt(intento) === numero) {
-    alert("🔥 ¡Ganaste!");
+  if (parseInt(i) === n) {
+    alert("🔥 Ganaste");
     sumarPuntos(10);
   } else {
-    alert("❌ Era " + numero);
+    alert("❌ Era " + n);
   }
 }
 
 function dados() {
-  let d1 = Math.floor(Math.random() * 6) + 1;
-  let d2 = Math.floor(Math.random() * 6) + 1;
+  let d1 = Math.floor(Math.random()*6)+1;
+  let d2 = Math.floor(Math.random()*6)+1;
+  alert("🎲 " + d1 + " y " + d2);
 
-  alert("🎲 Sacaste: " + d1 + " y " + d2);
-
-  if (d1 + d2 > 7) {
-    sumarPuntos(5);
-  }
+  if (d1+d2 > 7) sumarPuntos(5);
 }
 
 function ppt() {
-  let opciones = ["piedra", "papel", "tijera"];
-  let cpu = opciones[Math.floor(Math.random() * 3)];
-  let user = prompt("Elegí: piedra, papel o tijera");
+  let o = ["piedra","papel","tijera"];
+  let cpu = o[Math.floor(Math.random()*3)];
+  let u = prompt("piedra/papel/tijera");
 
-  if (user === cpu) {
-    alert("Empate 🤝");
+  if (u === cpu) {
+    alert("Empate");
   } else if (
-    (user === "piedra" && cpu === "tijera") ||
-    (user === "papel" && cpu === "piedra") ||
-    (user === "tijera" && cpu === "papel")
-  ) {
-    alert("🔥 Ganaste! CPU eligió " + cpu);
+    (u==="piedra"&&cpu==="tijera")||
+    (u==="papel"&&cpu==="piedra")||
+    (u==="tijera"&&cpu==="papel")
+  ){
+    alert("🔥 Ganaste");
     sumarPuntos(10);
   } else {
-    alert("❌ Perdiste. CPU eligió " + cpu);
+    alert("Perdiste");
   }
 }
 
-function password() {
-  let chars = "abcdefghijklmnopqrstuvwxyz1234567890!@#";
-  let pass = "";
+// ===== QUIZ PRO =====
+let preguntas = [
+{
+q:"¿Qué es Python?",
+o:["Lenguaje","Base de datos","Sistema"],
+c:0
+},
+{
+q:"¿Cómo imprimir?",
+o:["echo()","print()","log()"],
+c:1
+},
+{
+q:"Tipo de 'hola'?",
+o:["int","string","bool"],
+c:1
+}
+];
 
-  for (let i = 0; i < 8; i++) {
-    pass += chars[Math.floor(Math.random() * chars.length)];
+let index = 0;
+let score = 0;
+
+function iniciarQuiz(){
+  if(nivel()<2){
+    alert("🔒 Desbloqueá nivel 2");
+    return;
   }
 
-  alert("🔐 Tu contraseña: " + pass);
-  sumarPuntos(3);
+  index = 0;
+  score = 0;
+  document.getElementById("quizBox").classList.remove("hidden");
+  mostrarPregunta();
 }
 
-function quiz() {
-  let respuesta = prompt("¿Python es tipado dinámicamente? (si/no)");
+function mostrarPregunta(){
+  let p = preguntas[index];
 
-  if (respuesta.toLowerCase() === "si") {
-    alert("✅ Correcto!");
-    sumarPuntos(15);
+  let html = "<h3>"+p.q+"</h3>";
+
+  p.o.forEach((op,i)=>{
+    html += `<div class="option" onclick="responder(${i})">${op}</div>`;
+  });
+
+  document.getElementById("quizBox").innerHTML = html;
+}
+
+function responder(i){
+  if(i === preguntas[index].c){
+    score++;
+  }
+
+  index++;
+
+  if(index < preguntas.length){
+    mostrarPregunta();
   } else {
-    alert("❌ Incorrecto");
+    document.getElementById("quizBox").innerHTML = "✅ Puntaje: "+score;
+    sumarPuntos(score*10);
   }
 }
+
+// ===== RANKING =====
+function mostrarRanking(){
+  let r = JSON.parse(localStorage.getItem("ranking")) || [];
+  let nombre = prompt("Tu nombre");
+
+  r.push({nombre,puntos});
+  r.sort((a,b)=>b.puntos-a.puntos);
+
+  localStorage.setItem("ranking", JSON.stringify(r));
+
+  let top = "🏆 Ranking\n";
+  r.slice(0,5).forEach((p,i)=>{
+    top += `${i+1}. ${p.nombre} - ${p.puntos}\n`;
+  });
+
+  alert(top);
+}
+
+// INIT
+window.onload = () => {
+  actualizarUI();
+  desbloquear();
+};
+
 </script>
 
 </body>
