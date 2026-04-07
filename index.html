@@ -3,280 +3,257 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juan Pablo Code | Aprende Python Jugando</title>
+<title>Aprende Python Jugando</title>
 
 <style>
 body {
-  margin: 0;
+  margin:0;
   font-family: Arial;
-  background: #0b0f1a;
-  color: white;
+  background:#0b0f1a;
+  color:white;
 }
 
 header {
-  text-align: center;
-  padding: 20px;
-  background: #111827;
-  font-size: 24px;
+  text-align:center;
+  padding:15px;
+  background:#111827;
+  font-size:20px;
 }
 
-#user-panel {
-  text-align: center;
-  padding: 10px;
-  background: #020617;
-}
-
-.section {
-  padding: 20px;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+#topbar {
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+  background:#020617;
 }
 
 .card {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
+  background:#1e293b;
+  margin:10px;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
 }
 
 button {
-  margin-top: 10px;
-  padding: 10px;
-  border: none;
-  background: #22c55e;
-  border-radius: 6px;
-  cursor: pointer;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  background:#22c55e;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-.hidden {
-  display: none;
-}
-
-/* QUIZ UI */
-#quizBox {
-  background: #020617;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-}
+.hidden { display:none; }
 
 .option {
-  background: #1e293b;
-  margin: 10px 0;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 5px;
+  background:#1e293b;
+  margin:10px 0;
+  padding:10px;
+  border-radius:5px;
+  cursor:pointer;
 }
 
 .option:hover {
-  background: #22c55e;
+  background:#22c55e;
+}
+
+#progressBar {
+  height:10px;
+  background:#1e293b;
+  margin-top:10px;
+  border-radius:5px;
+}
+
+#progress {
+  height:10px;
+  background:#22c55e;
+  width:0%;
+  border-radius:5px;
 }
 </style>
 </head>
 
 <body>
 
-<header>🚀 Juan Pablo Code</header>
+<header>🚀 Aprende Python Jugando</header>
 
-<div id="user-panel">
-⭐ Puntos: <span id="points">0</span> |
-🧱 Nivel: <span id="level">1</span>
-</div>
-
-<section class="section">
-<h2>🎮 Juegos</h2>
-
-<div class="cards">
-
-<div class="card">
-<h3>🎯 Adivina el número</h3>
-<button onclick="jugar()">Jugar</button>
+<div id="topbar">
+  ⭐ <span id="points">0</span>
+  🧱 <span id="level">1</span>
+  ❤️ <span id="lives">3</span>
+  🔥 <span id="streak">0</span>
 </div>
 
 <div class="card">
-<h3>🎲 Dados</h3>
-<button onclick="dados()">Jugar</button>
+<h3>🎮 Juegos</h3>
+<button onclick="jugar()">Adivinar número</button>
+<button onclick="dados()">Dados</button>
+<button onclick="ppt()">Piedra Papel Tijera</button>
+<button onclick="iniciarQuiz()">Quiz Python</button>
+<button onclick="ranking()">Ranking</button>
 </div>
 
-<div class="card">
-<h3>✊ Piedra Papel Tijera</h3>
-<button onclick="ppt()">Jugar</button>
-</div>
-
-<div class="card" id="quizCard">
-<h3>🧠 Quiz Python</h3>
-<button onclick="iniciarQuiz()">Jugar</button>
-</div>
-
-<div class="card" id="rankingCard">
-<h3>🏆 Ranking</h3>
-<button onclick="mostrarRanking()">Ver</button>
-</div>
-
-</div>
-
-<div id="quizBox" class="hidden"></div>
-
-</section>
+<div class="card hidden" id="quizBox"></div>
 
 <script>
 
-// ===== SISTEMA =====
+// ===== DATA =====
 let puntos = localStorage.getItem("puntos") || 0;
+let vidas = localStorage.getItem("vidas") || 3;
+let streak = localStorage.getItem("streak") || 0;
 
-function nivel() {
-  return Math.floor(puntos / 50) + 1;
+function nivel(){
+  return Math.floor(puntos/50)+1;
 }
 
-function actualizarUI() {
-  document.getElementById("points").innerText = puntos;
-  document.getElementById("level").innerText = nivel();
+function actualizar(){
+  document.getElementById("points").innerText=puntos;
+  document.getElementById("level").innerText=nivel();
+  document.getElementById("lives").innerText=vidas;
+  document.getElementById("streak").innerText=streak;
 }
 
-function sumarPuntos(v) {
-  puntos = parseInt(puntos) + v;
-  localStorage.setItem("puntos", puntos);
-  actualizarUI();
-  desbloquear();
+// ===== SISTEMA =====
+function sumar(p){
+  puntos=parseInt(puntos)+p;
+  streak++;
+  guardar();
 }
 
-// ===== DESBLOQUEO =====
-function desbloquear() {
-  if (nivel() < 2) {
-    document.getElementById("quizCard").style.opacity = "0.3";
+function perderVida(){
+  vidas--;
+  streak=0;
+  if(vidas<=0){
+    alert("💀 Game Over");
+    vidas=3;
+    puntos=0;
   }
+  guardar();
+}
+
+function guardar(){
+  localStorage.setItem("puntos",puntos);
+  localStorage.setItem("vidas",vidas);
+  localStorage.setItem("streak",streak);
+  actualizar();
 }
 
 // ===== JUEGOS =====
-function jugar() {
-  let n = Math.floor(Math.random()*10)+1;
-  let i = prompt("Número 1-10");
+function jugar(){
+  let n=Math.floor(Math.random()*10)+1;
+  let i=prompt("1-10");
 
-  if (parseInt(i) === n) {
-    alert("🔥 Ganaste");
-    sumarPuntos(10);
+  if(parseInt(i)===n){
+    alert("🔥 bien");
+    sumar(10);
   } else {
-    alert("❌ Era " + n);
+    alert("❌ era "+n);
+    perderVida();
   }
 }
 
-function dados() {
-  let d1 = Math.floor(Math.random()*6)+1;
-  let d2 = Math.floor(Math.random()*6)+1;
-  alert("🎲 " + d1 + " y " + d2);
+function dados(){
+  let d1=Math.floor(Math.random()*6)+1;
+  let d2=Math.floor(Math.random()*6)+1;
 
-  if (d1+d2 > 7) sumarPuntos(5);
+  if(d1+d2>7){
+    alert("🔥 ganaste");
+    sumar(5);
+  } else {
+    perderVida();
+  }
 }
 
-function ppt() {
-  let o = ["piedra","papel","tijera"];
-  let cpu = o[Math.floor(Math.random()*3)];
-  let u = prompt("piedra/papel/tijera");
+function ppt(){
+  let o=["piedra","papel","tijera"];
+  let cpu=o[Math.floor(Math.random()*3)];
+  let u=prompt("piedra/papel/tijera");
 
-  if (u === cpu) {
-    alert("Empate");
-  } else if (
+  if(u===cpu){
+    alert("empate");
+  } else if(
     (u==="piedra"&&cpu==="tijera")||
     (u==="papel"&&cpu==="piedra")||
     (u==="tijera"&&cpu==="papel")
   ){
-    alert("🔥 Ganaste");
-    sumarPuntos(10);
+    sumar(10);
   } else {
-    alert("Perdiste");
+    perderVida();
   }
 }
 
-// ===== QUIZ PRO =====
-let preguntas = [
-{
-q:"¿Qué es Python?",
-o:["Lenguaje","Base de datos","Sistema"],
-c:0
-},
-{
-q:"¿Cómo imprimir?",
-o:["echo()","print()","log()"],
-c:1
-},
-{
-q:"Tipo de 'hola'?",
-o:["int","string","bool"],
-c:1
-}
+// ===== QUIZ =====
+let preguntas=[
+{q:"Python es...",o:["lenguaje","db","so"],c:0},
+{q:"print sirve para...",o:["mostrar","guardar","borrar"],c:0},
+{q:"# es...",o:["comentario","variable","loop"],c:0}
 ];
 
-let index = 0;
-let score = 0;
+let i=0;
+let correct=0;
 
 function iniciarQuiz(){
   if(nivel()<2){
-    alert("🔒 Desbloqueá nivel 2");
+    alert("🔒 nivel 2");
     return;
   }
 
-  index = 0;
-  score = 0;
+  i=0;
+  correct=0;
   document.getElementById("quizBox").classList.remove("hidden");
-  mostrarPregunta();
+  mostrar();
 }
 
-function mostrarPregunta(){
-  let p = preguntas[index];
+function mostrar(){
+  let p=preguntas[i];
 
-  let html = "<h3>"+p.q+"</h3>";
+  let html=`<h3>${p.q}</h3>
+  <div id="progressBar"><div id="progress" style="width:${(i/preguntas.length)*100}%"></div></div>`;
 
-  p.o.forEach((op,i)=>{
-    html += `<div class="option" onclick="responder(${i})">${op}</div>`;
+  p.o.forEach((op,index)=>{
+    html+=`<div class="option" onclick="resp(${index})">${op}</div>`;
   });
 
-  document.getElementById("quizBox").innerHTML = html;
+  document.getElementById("quizBox").innerHTML=html;
 }
 
-function responder(i){
-  if(i === preguntas[index].c){
-    score++;
+function resp(x){
+  if(x===preguntas[i].c){
+    correct++;
+    sumar(5);
+  } else {
+    perderVida();
   }
 
-  index++;
+  i++;
 
-  if(index < preguntas.length){
-    mostrarPregunta();
+  if(i<preguntas.length){
+    mostrar();
   } else {
-    document.getElementById("quizBox").innerHTML = "✅ Puntaje: "+score;
-    sumarPuntos(score*10);
+    document.getElementById("quizBox").innerHTML="🎉 Fin: "+correct;
   }
 }
 
 // ===== RANKING =====
-function mostrarRanking(){
-  let r = JSON.parse(localStorage.getItem("ranking")) || [];
-  let nombre = prompt("Tu nombre");
+function ranking(){
+  let name=prompt("nombre");
+  let r=JSON.parse(localStorage.getItem("rank"))||[];
 
-  r.push({nombre,puntos});
+  r.push({name,puntos});
   r.sort((a,b)=>b.puntos-a.puntos);
 
-  localStorage.setItem("ranking", JSON.stringify(r));
+  localStorage.setItem("rank",JSON.stringify(r));
 
-  let top = "🏆 Ranking\n";
+  let txt="🏆\n";
   r.slice(0,5).forEach((p,i)=>{
-    top += `${i+1}. ${p.nombre} - ${p.puntos}\n`;
+    txt+=`${i+1}. ${p.name} ${p.puntos}\n`;
   });
 
-  alert(top);
+  alert(txt);
 }
 
-// INIT
-window.onload = () => {
-  actualizarUI();
-  desbloquear();
-};
+window.onload=actualizar;
 
 </script>
 
