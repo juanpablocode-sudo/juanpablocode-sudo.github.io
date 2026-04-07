@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Juan Pablo Code | Aprende Python Jugando</title>
 
   <style>
@@ -19,16 +20,19 @@
       background: #111827;
     }
 
-    .hero {
-      padding: 60px;
-      text-align: center;
-      background: linear-gradient(to right, #0b0f1a, #1e293b);
-    }
-
     .hero h1 {
-      font-size: 40px;
-    }
+  font-size: 40px;
+}
 
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  .hero {
+    padding: 30px;
+  }
+}
     .btn {
       margin-top: 20px;
       padding: 12px 20px;
@@ -43,11 +47,10 @@
     }
 
     .cards {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap; /* 🔥 para que no se rompa en pantalla chica */
-      justify-content: center;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
 
     .card {
       background: #1e293b;
