@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aprende Python Jugando</title>
+<title>Juan Pablo Code | Aprende Python Jugando</title>
 
 <style>
 body {
@@ -13,11 +13,44 @@ body {
   color:white;
 }
 
+/* LOGIN */
+#loginScreen {
+  display:flex;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+}
+
+.login-box {
+  background:#1e293b;
+  padding:30px;
+  border-radius:10px;
+  text-align:center;
+}
+
+input {
+  padding:10px;
+  border:none;
+  border-radius:5px;
+  margin-top:10px;
+}
+
+button {
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  background:#22c55e;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.hidden { display:none; }
+
+/* APP */
 header {
   text-align:center;
   padding:15px;
   background:#111827;
-  font-size:20px;
 }
 
 #topbar {
@@ -35,17 +68,6 @@ header {
   text-align:center;
 }
 
-button {
-  padding:10px;
-  margin-top:10px;
-  border:none;
-  background:#22c55e;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.hidden { display:none; }
-
 .option {
   background:#1e293b;
   margin:10px 0;
@@ -61,14 +83,12 @@ button {
 #progressBar {
   height:10px;
   background:#1e293b;
-  margin-top:10px;
   border-radius:5px;
 }
 
 #progress {
   height:10px;
   background:#22c55e;
-  width:0%;
   border-radius:5px;
 }
 </style>
@@ -76,13 +96,26 @@ button {
 
 <body>
 
-<header>🚀 Aprende Python Jugando</header>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h2>🚀 Iniciar sesión</h2>
+    <input id="username" placeholder="Tu nombre">
+    <br>
+    <button onclick="login()">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+<header>Aprende Python Jugando</header>
 
 <div id="topbar">
-  ⭐ <span id="points">0</span>
-  🧱 <span id="level">1</span>
-  ❤️ <span id="lives">3</span>
-  🔥 <span id="streak">0</span>
+⭐ <span id="points">0</span>
+🧱 <span id="level">1</span>
+❤️ <span id="lives">3</span>
+🔥 <span id="streak">0</span>
 </div>
 
 <div class="card">
@@ -90,19 +123,45 @@ button {
 <button onclick="jugar()">Adivinar número</button>
 <button onclick="dados()">Dados</button>
 <button onclick="ppt()">Piedra Papel Tijera</button>
-<button onclick="iniciarQuiz()">Quiz Python</button>
+<button onclick="iniciarQuiz()">Quiz</button>
 <button onclick="ranking()">Ranking</button>
 </div>
 
 <div class="card hidden" id="quizBox"></div>
 
+</div>
+
 <script>
 
-// ===== DATA =====
-let puntos = localStorage.getItem("puntos") || 0;
-let vidas = localStorage.getItem("vidas") || 3;
-let streak = localStorage.getItem("streak") || 0;
+// ===== API =====
+const API = "https://backend-python-dwm0.onrender.com";
 
+// ===== DATA =====
+let usuario = "";
+let puntos = 0;
+let vidas = 3;
+let streak = 0;
+
+// ===== LOGIN =====
+async function login(){
+  usuario = document.getElementById("username").value;
+
+  let res = await fetch(API + "/login", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({username:usuario})
+  });
+
+  let data = await res.json();
+  puntos = data.points || 0;
+
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+
+  actualizar();
+}
+
+// ===== UI =====
 function nivel(){
   return Math.floor(puntos/50)+1;
 }
@@ -114,41 +173,47 @@ function actualizar(){
   document.getElementById("streak").innerText=streak;
 }
 
-// ===== SISTEMA =====
+// ===== BACKEND SAVE =====
+async function guardarServidor(){
+  await fetch(API + "/save", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username:usuario,
+      points:puntos
+    })
+  });
+}
+
+// ===== GAME SYSTEM =====
 function sumar(p){
-  puntos=parseInt(puntos)+p;
+  puntos += p;
   streak++;
-  guardar();
+  guardarServidor();
+  actualizar();
 }
 
 function perderVida(){
   vidas--;
-  streak=0;
+  streak = 0;
+
   if(vidas<=0){
     alert("💀 Game Over");
-    vidas=3;
-    puntos=0;
+    vidas = 3;
+    puntos = 0;
   }
-  guardar();
-}
 
-function guardar(){
-  localStorage.setItem("puntos",puntos);
-  localStorage.setItem("vidas",vidas);
-  localStorage.setItem("streak",streak);
   actualizar();
 }
 
 // ===== JUEGOS =====
 function jugar(){
   let n=Math.floor(Math.random()*10)+1;
-  let i=prompt("1-10");
+  let i=prompt("Número 1-10");
 
   if(parseInt(i)===n){
-    alert("🔥 bien");
     sumar(10);
   } else {
-    alert("❌ era "+n);
     perderVida();
   }
 }
@@ -158,7 +223,6 @@ function dados(){
   let d2=Math.floor(Math.random()*6)+1;
 
   if(d1+d2>7){
-    alert("🔥 ganaste");
     sumar(5);
   } else {
     perderVida();
@@ -171,7 +235,6 @@ function ppt(){
   let u=prompt("piedra/papel/tijera");
 
   if(u===cpu){
-    alert("empate");
   } else if(
     (u==="piedra"&&cpu==="tijera")||
     (u==="papel"&&cpu==="piedra")||
@@ -185,22 +248,20 @@ function ppt(){
 
 // ===== QUIZ =====
 let preguntas=[
-{q:"Python es...",o:["lenguaje","db","so"],c:0},
-{q:"print sirve para...",o:["mostrar","guardar","borrar"],c:0},
-{q:"# es...",o:["comentario","variable","loop"],c:0}
+{q:"¿Python es...?",o:["Lenguaje","DB","SO"],c:0},
+{q:"¿print sirve para...?",o:["Mostrar","Guardar","Borrar"],c:0},
+{q:"¿# es...?",o:["Comentario","Variable","Loop"],c:0}
 ];
 
 let i=0;
-let correct=0;
 
 function iniciarQuiz(){
   if(nivel()<2){
-    alert("🔒 nivel 2");
+    alert("🔒 Nivel 2 requerido");
     return;
   }
 
   i=0;
-  correct=0;
   document.getElementById("quizBox").classList.remove("hidden");
   mostrar();
 }
@@ -209,7 +270,9 @@ function mostrar(){
   let p=preguntas[i];
 
   let html=`<h3>${p.q}</h3>
-  <div id="progressBar"><div id="progress" style="width:${(i/preguntas.length)*100}%"></div></div>`;
+  <div id="progressBar">
+  <div id="progress" style="width:${(i/preguntas.length)*100}%"></div>
+  </div>`;
 
   p.o.forEach((op,index)=>{
     html+=`<div class="option" onclick="resp(${index})">${op}</div>`;
@@ -220,7 +283,6 @@ function mostrar(){
 
 function resp(x){
   if(x===preguntas[i].c){
-    correct++;
     sumar(5);
   } else {
     perderVida();
@@ -231,29 +293,23 @@ function resp(x){
   if(i<preguntas.length){
     mostrar();
   } else {
-    document.getElementById("quizBox").innerHTML="🎉 Fin: "+correct;
+    document.getElementById("quizBox").innerHTML="🎉 Quiz terminado";
   }
 }
 
 // ===== RANKING =====
-function ranking(){
-  let name=prompt("nombre");
-  let r=JSON.parse(localStorage.getItem("rank"))||[];
+async function ranking(){
+  let res = await fetch(API + "/ranking");
+  let data = await res.json();
 
-  r.push({name,puntos});
-  r.sort((a,b)=>b.puntos-a.puntos);
+  let txt="🏆 Ranking Global\n";
 
-  localStorage.setItem("rank",JSON.stringify(r));
-
-  let txt="🏆\n";
-  r.slice(0,5).forEach((p,i)=>{
-    txt+=`${i+1}. ${p.name} ${p.puntos}\n`;
+  data.forEach((u,i)=>{
+    txt+=`${i+1}. ${u[0]} - ${u[1].points}\n`;
   });
 
   alert(txt);
 }
-
-window.onload=actualizar;
 
 </script>
 
