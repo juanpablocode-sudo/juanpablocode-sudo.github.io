@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juan Pablo Code | Aprende Python Jugando</title>
+<title>Aprende Python Jugando</title>
 
 <style>
 body {
@@ -79,18 +79,6 @@ header {
 .option:hover {
   background:#22c55e;
 }
-
-#progressBar {
-  height:10px;
-  background:#1e293b;
-  border-radius:5px;
-}
-
-#progress {
-  height:10px;
-  background:#22c55e;
-  border-radius:5px;
-}
 </style>
 </head>
 
@@ -103,6 +91,7 @@ header {
     <input id="username" placeholder="Tu nombre">
     <br>
     <button onclick="login()">Entrar</button>
+    <p id="msg" style="color:#9ca3af;"></p>
   </div>
 </div>
 
@@ -122,46 +111,64 @@ header {
 <h3>🎮 Juegos</h3>
 <button onclick="jugar()">Adivinar número</button>
 <button onclick="dados()">Dados</button>
-<button onclick="ppt()">Piedra Papel Tijera</button>
-<button onclick="iniciarQuiz()">Quiz</button>
 <button onclick="ranking()">Ranking</button>
 </div>
-
-<div class="card hidden" id="quizBox"></div>
 
 </div>
 
 <script>
 
-// ===== API =====
 const API = "https://backend-python-dwm0.onrender.com";
 
-// ===== DATA =====
-let usuario = "";
-let puntos = 0;
-let vidas = 3;
-let streak = 0;
+let usuario="";
+let puntos=0;
+let vidas=3;
+let streak=0;
 
-// ===== LOGIN =====
+// LOGIN CORREGIDO
 async function login(){
-  usuario = document.getElementById("username").value;
 
-  let res = await fetch(API + "/login", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({username:usuario})
-  });
+  let input = document.getElementById("username").value.trim();
+  let msg = document.getElementById("msg");
 
-  let data = await res.json();
-  puntos = data.points || 0;
+  if(!input){
+    msg.innerText = "⚠️ Escribí un nombre";
+    return;
+  }
 
-  document.getElementById("loginScreen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
+  msg.innerText = "⏳ Conectando...";
 
-  actualizar();
+  try {
+
+    let res = await fetch(API + "/login", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({username: input})
+    });
+
+    if(!res.ok){
+      throw new Error("Error servidor");
+    }
+
+    let data = await res.json();
+
+    usuario = input;
+    puntos = data.points || 0;
+
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+
+    actualizar();
+
+  } catch(e){
+
+    msg.innerText = "❌ Error conectando. Esperá 20 segundos y probá otra vez.";
+
+    console.error(e);
+  }
 }
 
-// ===== UI =====
+// UI
 function nivel(){
   return Math.floor(puntos/50)+1;
 }
@@ -173,19 +180,20 @@ function actualizar(){
   document.getElementById("streak").innerText=streak;
 }
 
-// ===== BACKEND SAVE =====
+// SAVE
 async function guardarServidor(){
-  await fetch(API + "/save", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
-      username:usuario,
-      points:puntos
-    })
-  });
+  try{
+    await fetch(API + "/save", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({username:usuario,points:puntos})
+    });
+  }catch(e){
+    console.log("no guardó (render dormido)");
+  }
 }
 
-// ===== GAME SYSTEM =====
+// GAME
 function sumar(p){
   puntos += p;
   streak++;
@@ -193,20 +201,20 @@ function sumar(p){
   actualizar();
 }
 
-function perderVida(){
+function perder(){
   vidas--;
-  streak = 0;
+  streak=0;
 
   if(vidas<=0){
     alert("💀 Game Over");
-    vidas = 3;
-    puntos = 0;
+    vidas=3;
+    puntos=0;
   }
 
   actualizar();
 }
 
-// ===== JUEGOS =====
+// JUEGOS
 function jugar(){
   let n=Math.floor(Math.random()*10)+1;
   let i=prompt("Número 1-10");
@@ -214,7 +222,7 @@ function jugar(){
   if(parseInt(i)===n){
     sumar(10);
   } else {
-    perderVida();
+    perder();
   }
 }
 
@@ -225,90 +233,27 @@ function dados(){
   if(d1+d2>7){
     sumar(5);
   } else {
-    perderVida();
+    perder();
   }
 }
 
-function ppt(){
-  let o=["piedra","papel","tijera"];
-  let cpu=o[Math.floor(Math.random()*3)];
-  let u=prompt("piedra/papel/tijera");
-
-  if(u===cpu){
-  } else if(
-    (u==="piedra"&&cpu==="tijera")||
-    (u==="papel"&&cpu==="piedra")||
-    (u==="tijera"&&cpu==="papel")
-  ){
-    sumar(10);
-  } else {
-    perderVida();
-  }
-}
-
-// ===== QUIZ =====
-let preguntas=[
-{q:"¿Python es...?",o:["Lenguaje","DB","SO"],c:0},
-{q:"¿print sirve para...?",o:["Mostrar","Guardar","Borrar"],c:0},
-{q:"¿# es...?",o:["Comentario","Variable","Loop"],c:0}
-];
-
-let i=0;
-
-function iniciarQuiz(){
-  if(nivel()<2){
-    alert("🔒 Nivel 2 requerido");
-    return;
-  }
-
-  i=0;
-  document.getElementById("quizBox").classList.remove("hidden");
-  mostrar();
-}
-
-function mostrar(){
-  let p=preguntas[i];
-
-  let html=`<h3>${p.q}</h3>
-  <div id="progressBar">
-  <div id="progress" style="width:${(i/preguntas.length)*100}%"></div>
-  </div>`;
-
-  p.o.forEach((op,index)=>{
-    html+=`<div class="option" onclick="resp(${index})">${op}</div>`;
-  });
-
-  document.getElementById("quizBox").innerHTML=html;
-}
-
-function resp(x){
-  if(x===preguntas[i].c){
-    sumar(5);
-  } else {
-    perderVida();
-  }
-
-  i++;
-
-  if(i<preguntas.length){
-    mostrar();
-  } else {
-    document.getElementById("quizBox").innerHTML="🎉 Quiz terminado";
-  }
-}
-
-// ===== RANKING =====
+// RANKING
 async function ranking(){
-  let res = await fetch(API + "/ranking");
-  let data = await res.json();
+  try{
+    let res = await fetch(API + "/ranking");
+    let data = await res.json();
 
-  let txt="🏆 Ranking Global\n";
+    let txt="🏆 Ranking\n";
 
-  data.forEach((u,i)=>{
-    txt+=`${i+1}. ${u[0]} - ${u[1].points}\n`;
-  });
+    data.forEach((u,i)=>{
+      txt+=`${i+1}. ${u[0]} - ${u[1].points}\n`;
+    });
 
-  alert(txt);
+    alert(txt);
+
+  }catch(e){
+    alert("Esperá 20 segundos (servidor dormido)");
+  }
 }
 
 </script>
