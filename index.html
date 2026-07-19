@@ -3,260 +3,486 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aprende Python Jugando</title>
-
+<title>Juan Pablo Mendez — Mobile Security & Email Authentication</title>
+<meta name="description" content="Android Developer en transición hacia Mobile Security y Email Authentication Security (SPF/DKIM/DMARC).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0;
-  font-family: Arial;
-  background:#0b0f1a;
-  color:white;
-}
+  :root{
+    --bg: #0a0d0c;
+    --bg-panel: #0f1412;
+    --line: #1c2622;
+    --text: #dce4e0;
+    --text-dim: #7c8b85;
+    --accent: #5eead4;
+    --accent-dim: #2f6b60;
+    --warn: #e8a33d;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
 
-/* LOGIN */
-#loginScreen {
-  display:flex;
-  height:100vh;
-  justify-content:center;
-  align-items:center;
-}
+  *{margin:0;padding:0;box-sizing:border-box;}
 
-.login-box {
-  background:#1e293b;
-  padding:30px;
-  border-radius:10px;
-  text-align:center;
-}
+  html{scroll-behavior:smooth;}
 
-input {
-  padding:10px;
-  border:none;
-  border-radius:5px;
-  margin-top:10px;
-}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
 
-button {
-  padding:10px;
-  margin-top:10px;
-  border:none;
-  background:#22c55e;
-  border-radius:6px;
-  cursor:pointer;
-}
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.25;
+    pointer-events:none;
+    z-index:0;
+  }
 
-.hidden { display:none; }
+  a{color:inherit;}
 
-/* APP */
-header {
-  text-align:center;
-  padding:15px;
-  background:#111827;
-}
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px;
+    position:relative;
+    z-index:1;
+  }
 
-#topbar {
-  display:flex;
-  justify-content:space-around;
-  padding:10px;
-  background:#020617;
-}
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky;
+    top:0;
+    background:rgba(10,13,12,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    z-index:10;
+  }
+  nav.wrap{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    height:64px;
+  }
+  .logo{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.02em;
+    color:var(--text);
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo::before{
+    content:"";
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 8px var(--accent);
+  }
+  .navlinks{
+    display:flex;
+    gap:28px;
+    font-family:var(--mono);
+    font-size:13px;
+  }
+  .navlinks a{
+    text-decoration:none;
+    color:var(--text-dim);
+    transition:color .15s ease;
+  }
+  .navlinks a:hover{color:var(--accent);}
 
-.card {
-  background:#1e293b;
-  margin:10px;
-  padding:20px;
-  border-radius:10px;
-  text-align:center;
-}
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:88px 0 64px;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.05fr 1fr;
+    gap:56px;
+    align-items:center;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--accent);
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:40px;
+    line-height:1.15;
+    letter-spacing:-0.02em;
+    margin-bottom:18px;
+  }
+  h1 .accent{color:var(--accent);}
+  .lede{
+    color:var(--text-dim);
+    font-size:16px;
+    max-width:46ch;
+    margin-bottom:28px;
+  }
+  .hero-links{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:13px;
+    padding:11px 18px;
+    border-radius:6px;
+    text-decoration:none;
+    border:1px solid var(--line);
+    transition:border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#06110d;
+    border-color:var(--accent);
+    font-weight:600;
+  }
+  .btn-primary:hover{background:#7cf0da;}
+  .btn-ghost{color:var(--text-dim);}
+  .btn-ghost:hover{color:var(--text); border-color:var(--accent-dim);}
 
-.option {
-  background:#1e293b;
-  margin:10px 0;
-  padding:10px;
-  border-radius:5px;
-  cursor:pointer;
-}
+  /* ---------- TERMINAL ---------- */
+  .terminal{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 24px 60px -24px rgba(0,0,0,0.6);
+  }
+  .terminal-bar{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .dot{width:10px;height:10px;border-radius:50%;background:#2a332f;}
+  .terminal-title{
+    margin-left:8px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-dim);
+  }
+  .terminal-body{
+    padding:20px;
+    font-family:var(--mono);
+    font-size:13px;
+    line-height:1.75;
+    min-height:220px;
+  }
+  .prompt{color:var(--accent);}
+  .cmd{color:var(--text);}
+  .out{color:var(--text-dim);}
+  .out .pass{color:var(--accent);}
+  .cursor{
+    display:inline-block;
+    width:7px;
+    height:14px;
+    background:var(--accent);
+    vertical-align:middle;
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
 
-.option:hover {
-  background:#22c55e;
-}
+  /* ---------- SECTIONS ---------- */
+  section{padding:56px 0;border-top:1px solid var(--line);}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:32px;
+    gap:16px;
+  }
+  .section-head h2{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .section-tag{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-dim);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:16px;
+  }
+
+  .card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .card:hover{border-color:var(--accent-dim); transform:translateY(-2px);}
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+  .card-icon{
+    font-size:20px;
+  }
+  .card-arrow{
+    color:var(--text-dim);
+    font-family:var(--mono);
+    font-size:13px;
+    transition:transform .15s ease, color .15s ease;
+  }
+  .card:hover .card-arrow{color:var(--accent); transform:translate(2px,-2px);}
+  .card h3{
+    font-size:15px;
+    font-weight:600;
+  }
+  .card p{
+    color:var(--text-dim);
+    font-size:13px;
+    line-height:1.55;
+  }
+  .card-meta{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--accent-dim);
+    margin-top:auto;
+    padding-top:6px;
+  }
+
+  /* ---------- STACK ---------- */
+  .stack-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .chip{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-dim);
+    border:1px solid var(--line);
+    padding:7px 12px;
+    border-radius:20px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 0 48px;
+  }
+  .footer-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .footer-row p{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-dim);
+  }
+  .footer-links{
+    display:flex;
+    gap:20px;
+    font-family:var(--mono);
+    font-size:12px;
+  }
+  .footer-links a{text-decoration:none;color:var(--text-dim);}
+  .footer-links a:hover{color:var(--accent);}
+
+  @media (max-width: 760px){
+    .hero-grid{grid-template-columns:1fr;}
+    .grid{grid-template-columns:1fr;}
+    h1{font-size:32px;}
+    .navlinks{gap:16px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cursor{animation:none;}
+    html{scroll-behavior:auto;}
+  }
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div class="login-box">
-    <h2>🚀 Iniciar sesión</h2>
-    <input id="username" placeholder="Tu nombre">
-    <br>
-    <button onclick="login()">Entrar</button>
-    <p id="msg" style="color:#9ca3af;"></p>
+<header>
+  <nav class="wrap">
+    <a href="#" class="logo">juanpablocode</a>
+    <div class="navlinks">
+      <a href="#apps">Apps</a>
+      <a href="#security">Seguridad</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Android Developer → Mobile Security</div>
+        <h1>Construyo apps.<br>Ahora las <span class="accent">audito</span>.</h1>
+        <p class="lede">9+ años como desarrollador Android, en transición activa hacia Mobile Security y Email Authentication Security (SPF/DKIM/DMARC). Formación en Ciberdefensa — UNDEF.</p>
+        <div class="hero-links">
+          <a class="btn btn-primary" href="#security">Ver proyectos de seguridad</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/desarrolladorandroid/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="terminal-title">dmarc-checker — zsh</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="prompt">$</span> <span class="cmd">whoami</span></div>
+          <div class="out">juan_pablo — android_dev / mobile_sec</div>
+          <br>
+          <div><span class="prompt">$</span> <span class="cmd">dig TXT _dmarc.example.com</span></div>
+          <div class="out">_dmarc.example.com. 3600 IN TXT</div>
+          <div class="out">"v=DMARC1; p=quarantine; rua=mailto:reports@example.com"</div>
+          <br>
+          <div><span class="prompt">$</span> <span class="cmd">spf --validate example.com</span></div>
+          <div class="out"><span class="pass">✓</span> SPF record found — <span class="pass">PASS</span></div>
+          <div class="out"><span class="pass">✓</span> DKIM alignment — <span class="pass">PASS</span></div>
+          <br>
+          <div><span class="prompt">$</span> <span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apps">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Apps publicadas</h2>
+        <span class="section-tag">Google Play</span>
+      </div>
+      <div class="grid">
+        <a class="card" href="https://play.google.com/store/apps/details?id=com.juanpablocode.calculadoraimc" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="card-icon">⚖️</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h3>Calculadora IMC — Peso Ideal</h3>
+          <p>Calculá tu Índice de Masa Corporal y rango de peso ideal de forma simple y rápida.</p>
+          <div class="card-meta">Kotlin · Android</div>
+        </a>
+
+        <a class="card" href="https://play.google.com/store/apps/details?id=com.juanpablocode.unitconverter" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="card-icon">🔁</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h3>Unit Converter: All Units</h3>
+          <p>Conversor de unidades todo-en-uno: longitud, peso, temperatura, volumen y más.</p>
+          <div class="card-meta">Kotlin · Android</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="security">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Proyectos de seguridad</h2>
+        <span class="section-tag">GitHub · Python</span>
+      </div>
+      <div class="grid">
+        <a class="card" href="https://github.com/juanpablocode-sudo/apk-permission-auditor" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="card-icon">🔍</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h3>apk-permission-auditor</h3>
+          <p>Herramienta en Python que audita permisos declarados en APKs de Android.</p>
+          <div class="card-meta">python · static-analysis</div>
+        </a>
+
+        <a class="card" href="https://github.com/juanpablocode-sudo/mini-ids" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="card-icon">🛡️</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h3>mini-ids</h3>
+          <p>Sistema liviano de detección de intrusos para Linux — monitorea intentos de acceso fallidos.</p>
+          <div class="card-meta">python · linux</div>
+        </a>
+
+        <a class="card" href="https://github.com/juanpablocode-sudo/mobile-security-lab" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="card-icon">📱</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h3>mobile-security-lab</h3>
+          <p>Laboratorio de aprendizaje en seguridad Android: pentesting y análisis de apps.</p>
+          <div class="card-meta">android · pentesting</div>
+        </a>
+
+        <a class="card" href="https://github.com/juanpablocode-sudo/cyberdefense-journey" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="card-icon">📌</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <h3>cyberdefense-journey</h3>
+          <p>Repositorio técnico de mi formación en ciberdefensa — UNDEF.</p>
+          <div class="card-meta">shell · notes</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Stack</h2>
+      </div>
+      <div class="stack-row">
+        <span class="chip">Kotlin</span>
+        <span class="chip">Android SDK</span>
+        <span class="chip">Python</span>
+        <span class="chip">SPF / DKIM / DMARC</span>
+        <span class="chip">Linux</span>
+        <span class="chip">Git</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contacto">
+  <div class="wrap footer-row">
+    <p>"La seguridad no es un producto, es un proceso."</p>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/desarrolladorandroid/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/juanpablocode-sudo" target="_blank" rel="noopener">GitHub</a>
+    </div>
   </div>
-</div>
-
-<!-- APP -->
-<div id="app" class="hidden">
-
-<header>Aprende Python Jugando</header>
-
-<div id="topbar">
-⭐ <span id="points">0</span>
-🧱 <span id="level">1</span>
-❤️ <span id="lives">3</span>
-🔥 <span id="streak">0</span>
-</div>
-
-<div class="card">
-<h3>🎮 Juegos</h3>
-<button onclick="jugar()">Adivinar número</button>
-<button onclick="dados()">Dados</button>
-<button onclick="ranking()">Ranking</button>
-</div>
-
-</div>
-
-<script>
-
-const API = "https://backend-python-dwm0.onrender.com";
-
-let usuario="";
-let puntos=0;
-let vidas=3;
-let streak=0;
-
-// LOGIN CORREGIDO
-async function login(){
-
-  let input = document.getElementById("username").value.trim();
-  let msg = document.getElementById("msg");
-
-  if(!input){
-    msg.innerText = "⚠️ Escribí un nombre";
-    return;
-  }
-
-  msg.innerText = "⏳ Conectando...";
-
-  try {
-
-    let res = await fetch(API + "/login", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({username: input})
-    });
-
-    if(!res.ok){
-      throw new Error("Error servidor");
-    }
-
-    let data = await res.json();
-
-    usuario = input;
-    puntos = data.points || 0;
-
-    document.getElementById("loginScreen").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-
-    actualizar();
-
-  } catch(e){
-
-    msg.innerText = "❌ Error conectando. Esperá 20 segundos y probá otra vez.";
-
-    console.error(e);
-  }
-}
-
-// UI
-function nivel(){
-  return Math.floor(puntos/50)+1;
-}
-
-function actualizar(){
-  document.getElementById("points").innerText=puntos;
-  document.getElementById("level").innerText=nivel();
-  document.getElementById("lives").innerText=vidas;
-  document.getElementById("streak").innerText=streak;
-}
-
-// SAVE
-async function guardarServidor(){
-  try{
-    await fetch(API + "/save", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({username:usuario,points:puntos})
-    });
-  }catch(e){
-    console.log("no guardó (render dormido)");
-  }
-}
-
-// GAME
-function sumar(p){
-  puntos += p;
-  streak++;
-  guardarServidor();
-  actualizar();
-}
-
-function perder(){
-  vidas--;
-  streak=0;
-
-  if(vidas<=0){
-    alert("💀 Game Over");
-    vidas=3;
-    puntos=0;
-  }
-
-  actualizar();
-}
-
-// JUEGOS
-function jugar(){
-  let n=Math.floor(Math.random()*10)+1;
-  let i=prompt("Número 1-10");
-
-  if(parseInt(i)===n){
-    sumar(10);
-  } else {
-    perder();
-  }
-}
-
-function dados(){
-  let d1=Math.floor(Math.random()*6)+1;
-  let d2=Math.floor(Math.random()*6)+1;
-
-  if(d1+d2>7){
-    sumar(5);
-  } else {
-    perder();
-  }
-}
-
-// RANKING
-async function ranking(){
-  try{
-    let res = await fetch(API + "/ranking");
-    let data = await res.json();
-
-    let txt="🏆 Ranking\n";
-
-    data.forEach((u,i)=>{
-      txt+=`${i+1}. ${u[0]} - ${u[1].points}\n`;
-    });
-
-    alert(txt);
-
-  }catch(e){
-    alert("Esperá 20 segundos (servidor dormido)");
-  }
-}
-
-</script>
+</footer>
 
 </body>
 </html>
