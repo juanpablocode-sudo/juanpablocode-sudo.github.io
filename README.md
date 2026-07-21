@@ -10,6 +10,4 @@ Landing page personal — Android Developer en transición hacia Mobile Security
 - Proyectos de seguridad (Python)
 - Contacto / LinkedIn
 
-## Nota técnica
 
-Este repo también aloja `app-ads.txt` para verificación de AdMob — requerido en la raíz del dominio.
