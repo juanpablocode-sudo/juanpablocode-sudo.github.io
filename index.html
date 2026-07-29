@@ -363,13 +363,10 @@
           <div><span class="prompt">$</span> <span class="cmd">whoami</span></div>
           <div class="out">juan_pablo — android_dev / mobile_sec</div>
           <br>
-          <div><span class="prompt">$</span> <span class="cmd">dig TXT _dmarc.example.com</span></div>
-          <div class="out">_dmarc.example.com. 3600 IN TXT</div>
-          <div class="out">"v=DMARC1; p=quarantine; rua=mailto:reports@example.com"</div>
-          <br>
-          <div><span class="prompt">$</span> <span class="cmd">spf --validate example.com</span></div>
-          <div class="out"><span class="pass">✓</span> SPF record found — <span class="pass">PASS</span></div>
-          <div class="out"><span class="pass">✓</span> DKIM alignment — <span class="pass">PASS</span></div>
+          <div><span class="prompt">$</span> <span class="cmd">python dmarc_checker.py mercadolibre.com</span></div>
+          <div class="out">[SPF] Encontrado: "v=spf1 a:spfip.mercadolibre.com ... ~all"</div>
+          <div class="out">[DMARC] Encontrado: v=DMARC1; p=reject; ...</div>
+          <div class="out"><span class="pass">✓</span> Nivel: REJECT (máxima protección)</div>
           <br>
           <div><span class="prompt">$</span> <span class="cursor"></span></div>
         </div>
@@ -414,14 +411,14 @@
         <span class="section-tag">GitHub · Python</span>
       </div>
       <div class="grid">
-        <a class="card" href="https://github.com/juanpablocode-sudo/apk-permission-auditor" target="_blank" rel="noopener">
+        <a class="card" href="https://github.com/juanpablocode-sudo/dmarc-checker" target="_blank" rel="noopener">
           <div class="card-top">
-            <span class="card-icon">🔍</span>
+            <span class="card-icon">📧</span>
             <span class="card-arrow">↗</span>
           </div>
-          <h3>apk-permission-auditor</h3>
-          <p>Herramienta en Python que audita permisos declarados en APKs de Android.</p>
-          <div class="card-meta">python · static-analysis</div>
+          <h3>dmarc-checker</h3>
+          <p>Herramienta en Python que audita configuración SPF/DMARC de un dominio para detectar riesgo de suplantación de identidad.</p>
+          <div class="card-meta">python · email-security</div>
         </a>
 
         <a class="card" href="https://github.com/juanpablocode-sudo/mini-ids" target="_blank" rel="noopener">
